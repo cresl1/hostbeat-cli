@@ -8,7 +8,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() <= 1 {
-        exit(exitcode::USAGE, true);
+        exit(exitcode::USAGE, true, "");
     }
 
     let second_arg: &str = args[1].trim();
@@ -16,22 +16,20 @@ fn main() {
     if !is_command(&second_arg) {
         
         if second_arg == "--help" || second_arg == "-h" {
-            exit(exitcode::OK, true);
+            exit(exitcode::OK, true, "");
         }
 
         if second_arg == "--version" || second_arg == "-v" {
-            println!("dontdie {}", env!("CARGO_PKG_VERSION"));
-            exit(exitcode::OK, false)
+            exit(exitcode::OK, false, &format!("dontdie {}", env!("CARGO_PKG_VERSION")))
         }
         
-        println!("> Invalid parameter, please read help");
-        exit(exitcode::DATAERR, false);
+        exit(exitcode::DATAERR, false, "> Invalid parameter, please read help");
     }
 
     if second_arg == "heartbeat" {
 
         if args.len() <= 2 {
-            exit(exitcode::USAGE, true);
+            exit(exitcode::USAGE, true, "");
         }
 
         let third_arg: &str = args[2].trim();
@@ -56,8 +54,7 @@ fn main() {
                     let send_parameters = get_send_parameters(&args[3..]);
 
                     if send_parameters.is_empty() {
-                        println!("> Invalid parameters for send command, please read help");
-                        exit(exitcode::DATAERR, false);
+                        exit(exitcode::DATAERR, false, "> Invalid parameters for send command, please read help");
                     }
 
                     // TODO: Inject parameters
@@ -67,24 +64,25 @@ fn main() {
 
                 // Do send
                 println!("> Sending heartbeat, has params {}", has_params);
-                exit(exitcode::OK, false);
+                exit(exitcode::OK, false, &format!("> Sending heartbeat, has params {}", has_params));
             }
 
-            println!("> Command for heartbeat not found, please read help");
-            exit(exitcode::DATAERR, false);
+            exit(exitcode::DATAERR, false, "> Command for heartbeat not found, please read help");
         }
 
-        println!("> Heartbeat command does not have parameters, please read help");
-        exit(exitcode::DATAERR, false);
+        exit(exitcode::DATAERR, false, "> Heartbeat command does not have parameters, please read help");
     }
 
-    println!("> Invalid command, please read help");
-    exit(exitcode::DATAERR, false);
+    exit(exitcode::DATAERR, false, "> Invalid command, please read help");
 }
 
-fn exit(code: ExitCode, show_help: bool) {
+fn exit(code: ExitCode, show_help: bool, message: &str) {
     if show_help {
         utils::cli::print_help();
+    }
+
+    if !show_help && !message.is_empty() {
+        println!("{}", message);
     }
 
     std::process::exit(code);
