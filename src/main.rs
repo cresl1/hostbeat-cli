@@ -38,6 +38,20 @@ fn main() {
 
             if third_arg == "config" {
 
+                if args.len() < 4 {
+                    exit(exitcode::USAGE, false, "> The config command needs parameters, please read help");
+                }
+                
+                let parameters = vec!["--set-url", "--set-token", "--set-interval"];
+                let config_parameters = get_command_parameters(&parameters, &args[3..]);
+
+                if config_parameters == None {
+                    exit(exitcode::DATAERR, false, "> Invalid parameters for config command, please read help")
+                }
+                
+                // Do send
+                exit(exitcode::OK, false, &format!("> Config set"));
+
             }
             
             if third_arg == "daemon" {
@@ -98,6 +112,16 @@ fn is_command(arg: &str) -> bool {
     return is_command;
 }
 
+fn is_flag(arg: &str) -> bool {
+    let mut is_flag = false;
+
+    if arg.starts_with("--") {
+        is_flag = true;
+    }
+
+    return is_flag;
+}
+
 fn get_send_parameters(args: &[String]) -> HashMap<String, &String> {
     let use_url = "--use-url";
     let use_token = "--use-token";
@@ -132,4 +156,43 @@ fn get_send_parameters(args: &[String]) -> HashMap<String, &String> {
     }
 
     return HashMap::new();
+}
+
+fn get_command_parameters(parameters: &Vec<&str>, args: &[String]) -> Option<HashMap<String, String>> {
+    let mut result: HashMap<String, String> = HashMap::new();
+    
+    let mut param_index: usize = 0;
+    let mut error = false;
+
+    while param_index < parameters.len() && !error {
+        
+        let mut arg_index: usize = 0;
+        let mut found = false;
+
+        while arg_index < args.len() && !found && !error {
+            
+            if is_flag(&args[arg_index]) && parameters[param_index] == args[arg_index] {
+
+                if (arg_index + 1) >= args.len() {
+                    error = true;
+                }
+                else {
+                    result.insert(parameters[param_index].to_string(), args[arg_index + 1].trim().to_string());
+                    found = true;
+                }
+                
+            }
+
+            arg_index += 1;
+        }
+
+        param_index += 1;
+    }
+
+    if error || result.is_empty() {
+        return None;
+    }
+
+    return Some(result);
+
 }
