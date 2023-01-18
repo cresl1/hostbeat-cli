@@ -1,8 +1,9 @@
 mod libs;
 
 use crate::libs::utils;
-use std::{env, collections::HashMap};
+use std::{env, fs, collections::HashMap, path::{PathBuf}};
 use exitcode::{self, ExitCode};
+use libs::settings::{Settings, self};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -33,6 +34,11 @@ fn main() {
         }
 
         let third_arg: &str = args[2].trim();
+        let settings = match load_settings() {
+            Ok(settings) => settings,
+            Err(error) => panic!("> Error loading settings, exception -> {}", error),
+        };
+
 
         if is_command(&third_arg) {
 
@@ -108,6 +114,34 @@ fn main() {
     }
 
     exit(exitcode::DATAERR, false, "> Invalid command, please read help");
+}
+
+fn load_settings() -> Result<Settings, std::io::Error> {
+    
+    let settings_dir: PathBuf = dirs::config_dir().unwrap().join("dontdie");
+    let settings_file: PathBuf = settings_dir.join("settings.json");
+
+    // Create config
+    if !settings_dir.exists() {
+        let default_config = Settings::default();
+        
+        match fs::create_dir_all(settings_dir) {
+            Ok(_) => (),
+            Err(e) => return Err(e)
+        };
+        match fs::write(settings_file.clone(), default_config.to_json()) {
+            Ok(_) => (),
+            Err(e) => return Err(e),
+        }
+
+        return Ok(default_config);
+    }
+
+    // Load current config
+    match fs::read_to_string(settings_file.clone()) {
+        Ok(content) => return Ok(Settings::from_json(&content)),
+        Err(e) => return Err(e)
+    };
 }
 
 fn exit(code: ExitCode, show_help: bool, message: &str) {
