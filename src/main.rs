@@ -38,6 +38,20 @@ fn main() {
 
             if third_arg == "config" {
 
+                if args.len() < 4 {
+                    exit(exitcode::USAGE, false, "> The config command needs parameters, please read help");
+                }
+                
+                let parameters = vec!["--set-url", "--set-token", "--set-interval"];
+                let config_parameters = get_command_parameters(&parameters, &args[3..]);
+
+                if config_parameters == None {
+                    exit(exitcode::DATAERR, false, "> Invalid parameters for config command, please read help")
+                }
+                
+                // Do send
+                exit(exitcode::OK, false, &format!("> Config set"));
+
             }
             
             if third_arg == "daemon" {
@@ -51,9 +65,10 @@ fn main() {
 
                 if args.len() >= 4 {
                     
-                    let send_parameters = get_send_parameters(&args[3..]);
+                    let parameters = vec!["--use-url", "--use-token"];
+                    let send_parameters = get_command_parameters(&parameters, &args[3..]);
 
-                    if send_parameters.is_empty() {
+                    if send_parameters == None {
                         exit(exitcode::DATAERR, false, "> Invalid parameters for send command, please read help");
                     }
 
@@ -63,7 +78,6 @@ fn main() {
                 }
 
                 // Do send
-                println!("> Sending heartbeat, has params {}", has_params);
                 exit(exitcode::OK, false, &format!("> Sending heartbeat, has params {}", has_params));
             }
 
@@ -98,38 +112,51 @@ fn is_command(arg: &str) -> bool {
     return is_command;
 }
 
-fn get_send_parameters(args: &[String]) -> HashMap<String, &String> {
-    let use_url = "--use-url";
-    let use_token = "--use-token";
+fn is_flag(arg: &str) -> bool {
+    let mut is_flag = false;
 
-    if args.len() == 2 {
-
-        if args[0] == use_url {
-            let use_url_map = (use_url.to_string(), &args[1]);
-            return HashMap::from([use_url_map]);
-        }
-
-        if args[0] == use_token {
-            let use_token_map = (use_token.to_string(), &args[1]);
-            return HashMap::from([use_token_map]);
-        }
+    if arg.starts_with("--") {
+        is_flag = true;
     }
 
-    if args.len() == 4 {
+    return is_flag;
+}
 
-        if args[0] == use_url && args[2] == use_token {
-            let use_url_map = (use_url.to_string(), &args[1]);
-            let use_token_map = (use_token.to_string(), &args[3]);
-            return HashMap::from([use_url_map, use_token_map]);
+fn get_command_parameters(parameters: &Vec<&str>, args: &[String]) -> Option<HashMap<String, String>> {
+    let mut result: HashMap<String, String> = HashMap::new();
+    
+    let mut param_index: usize = 0;
+    let mut error = false;
+
+    while param_index < parameters.len() && !error {
+        
+        let mut arg_index: usize = 0;
+        let mut found = false;
+
+        while arg_index < args.len() && !found && !error {
+            
+            if is_flag(&args[arg_index]) && parameters[param_index] == args[arg_index] {
+
+                if (arg_index + 1) >= args.len() {
+                    error = true;
+                }
+                else {
+                    result.insert(parameters[param_index].to_string(), args[arg_index + 1].trim().to_string());
+                    found = true;
+                }
+                
+            }
+
+            arg_index += 1;
         }
 
-        if args[0] == use_token && args[2] == use_url {
-            let use_token_map = (use_token.to_string(), &args[1]);
-            let use_url_map = (use_url.to_string(), &args[3]);
-            return HashMap::from([use_token_map, use_url_map]);
-        }
-
+        param_index += 1;
     }
 
-    return HashMap::new();
+    if error || result.is_empty() {
+        return None;
+    }
+
+    return Some(result);
+
 }
