@@ -65,9 +65,10 @@ fn main() {
 
                 if args.len() >= 4 {
                     
-                    let send_parameters = get_send_parameters(&args[3..]);
+                    let parameters = vec!["--use-url", "--use-token"];
+                    let send_parameters = get_command_parameters(&parameters, &args[3..]);
 
-                    if send_parameters.is_empty() {
+                    if send_parameters == None {
                         exit(exitcode::DATAERR, false, "> Invalid parameters for send command, please read help");
                     }
 
@@ -77,7 +78,6 @@ fn main() {
                 }
 
                 // Do send
-                println!("> Sending heartbeat, has params {}", has_params);
                 exit(exitcode::OK, false, &format!("> Sending heartbeat, has params {}", has_params));
             }
 
@@ -120,42 +120,6 @@ fn is_flag(arg: &str) -> bool {
     }
 
     return is_flag;
-}
-
-fn get_send_parameters(args: &[String]) -> HashMap<String, &String> {
-    let use_url = "--use-url";
-    let use_token = "--use-token";
-
-    if args.len() == 2 {
-
-        if args[0] == use_url {
-            let use_url_map = (use_url.to_string(), &args[1]);
-            return HashMap::from([use_url_map]);
-        }
-
-        if args[0] == use_token {
-            let use_token_map = (use_token.to_string(), &args[1]);
-            return HashMap::from([use_token_map]);
-        }
-    }
-
-    if args.len() == 4 {
-
-        if args[0] == use_url && args[2] == use_token {
-            let use_url_map = (use_url.to_string(), &args[1]);
-            let use_token_map = (use_token.to_string(), &args[3]);
-            return HashMap::from([use_url_map, use_token_map]);
-        }
-
-        if args[0] == use_token && args[2] == use_url {
-            let use_token_map = (use_token.to_string(), &args[1]);
-            let use_url_map = (use_url.to_string(), &args[3]);
-            return HashMap::from([use_token_map, use_url_map]);
-        }
-
-    }
-
-    return HashMap::new();
 }
 
 fn get_command_parameters(parameters: &Vec<&str>, args: &[String]) -> Option<HashMap<String, String>> {
