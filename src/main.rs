@@ -56,6 +56,26 @@ fn main() {
             
             if third_arg == "daemon" {
 
+                // TODO: remove this for final version
+                let mut has_params = false;
+
+                if args.len() >= 4 {
+                    
+                    let parameters = vec!["--use-url", "--use-token", "--use-interval"];
+                    let send_parameters = get_command_parameters(&parameters, &args[3..]);
+
+                    if send_parameters == None {
+                        exit(exitcode::DATAERR, false, "> Invalid parameters for daemon command, please read help");
+                    }
+
+                    // TODO: Inject parameters
+                    println!("> Daemon... parameters are checked and correct");
+                    has_params = true;
+                }
+
+                // Do send
+                exit(exitcode::OK, false, &format!("> Running daemon, has params {}", has_params));
+
             }
 
             if third_arg == "send" {
