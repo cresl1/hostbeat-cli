@@ -73,7 +73,7 @@ impl Settings {
             interval: self.interval.clone()
         };
 
-        return json::stringify(data);
+        return json::stringify_pretty(data, 4);
     }
 }
 
