@@ -51,13 +51,10 @@ fn main() {
                     exit(exitcode::DATAERR, false, "> Invalid parameters for config command, please read help")
                 }
 
-                SettingsService::new()
-                    .load_settings()
-                    .set_from(config_parameters.unwrap());
-
-                // Do send
-                exit(exitcode::OK, false, &format!("> Config set"));
-
+                match SettingsService::new().load_settings().set_from(config_parameters.unwrap()) {
+                    Some(string_error) => exit(exitcode::DATAERR, false, &string_error),
+                    None => exit(exitcode::OK, false, "")
+                }
             }
 
             if third_arg == "daemon" {
