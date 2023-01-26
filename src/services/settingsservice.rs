@@ -45,7 +45,7 @@ impl SettingsService {
         return self;
     }
     
-    pub fn set_from(mut self, map: HashMap<String, String>) -> Option<String> {
+    pub fn set_from(&mut self, map: HashMap<String, String>, save: bool) -> Option<String> {
         
         let url_value: Option<&String> = map.get("--set-url");
         
@@ -55,7 +55,7 @@ impl SettingsService {
                 return Some(format!("> Invalid URL error: the url '{}' is not in a correct format", &url_value.unwrap())); 
             }
             
-            self.settings = self.settings.set_url(url_value.unwrap().clone());
+            self.settings.set_url(url_value.unwrap().clone());
         }
         
         let token_value:Option<&String> = map.get("--set-token");
@@ -66,7 +66,7 @@ impl SettingsService {
                 return Some(format!("> Invalid token error: the token can't be empty or too much little"));
             }
             
-            self.settings = self.settings.set_token(token_value.unwrap().clone());
+            self.settings.set_token(token_value.unwrap().clone());
         }
         
         let interval_value = map.get("--set-interval");
@@ -82,14 +82,17 @@ impl SettingsService {
                 return Some("> Invalid interval error: interval should be bettween 0.5 and 3 minutes".to_string());
             }
             
-            self.settings = self.settings.set_interval(parsed);
+            self.settings.set_interval(parsed);
         }
         
-        match fs::write(self.settings_file.clone(), self.settings.to_json()) {
-            Ok(_) => return None,
-            Err(e) => return Some(format!("> Writing settings error: can't write settings into the file, for more detail: {}", e)),
+        if save {
+            match fs::write(self.settings_file.clone(), self.settings.to_json()) {
+                Ok(_) => return None,
+                Err(e) => return Some(format!("> Writing settings error: can't write settings into the file, for more detail: {}", e)),
+            }
         }
         
+        return None;
     }
     
     fn url_is_valid(&self, url: &String) -> bool {
@@ -102,5 +105,15 @@ impl SettingsService {
 impl AsRef<SettingsService> for SettingsService {
     fn as_ref(&self) -> &SettingsService {
         &self
+    }
+}
+
+impl Clone for SettingsService {
+    fn clone(&self) -> Self {
+        Self { 
+            settings: self.settings.clone(), 
+            settings_dir: self.settings_dir.clone(), 
+            settings_file: self.settings_file.clone() 
+        }
     }
 }

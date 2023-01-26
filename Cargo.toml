@@ -10,3 +10,4 @@ dirs = "4.0.0"
 exitcode = "1.1.2"
 json = "0.12.4"
 regex = "1.7.1"
+minreq = { version = "2.6.0", features = ["https-rustls"] }

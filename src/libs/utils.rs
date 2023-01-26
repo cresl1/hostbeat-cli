@@ -18,7 +18,6 @@ pub mod cli {
         dontdie     heartbeat   send                          send one heartbeat using data from file
         dontdie     heartbeat   send     --use-url            send heartbeat to custom url, overrides file value
         dontdie     heartbeat   send     --use-token          send heartbeat with custom token, overrides file value
-        dontdie     heartbeat   send     --use-interval       send heartbeat with custom interval, overrides file value
         ");
     }
 }
