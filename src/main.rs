@@ -4,7 +4,7 @@ mod services;
 use crate::libs::utils;
 use std::{env, collections::HashMap};
 use exitcode::{self, ExitCode};
-use services::settingsservice::SettingsService;
+use services::{settingsservice::SettingsService, heartbeatservice::HeartbeatService};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -51,7 +51,7 @@ fn main() {
                     exit(exitcode::DATAERR, false, "> Invalid parameters for config command, please read help")
                 }
 
-                match SettingsService::new().load_settings().set_from(config_parameters.unwrap()) {
+                match SettingsService::new().load_settings().set_from(config_parameters.unwrap(), true) {
                     Some(string_error) => exit(exitcode::DATAERR, false, &string_error),
                     None => exit(exitcode::OK, false, "")
                 }
@@ -82,10 +82,7 @@ fn main() {
             }
 
             if third_arg == "send" {
-
-                // TODO: remove this for final version
-                let mut has_params = false;
-
+                
                 if args.len() >= 4 {
 
                     let parameters = vec!["--use-url", "--use-token"];
@@ -94,14 +91,26 @@ fn main() {
                     if send_parameters == None {
                         exit(exitcode::DATAERR, false, "> Invalid parameters for send command, please read help");
                     }
-
-                    // TODO: Inject parameters
-                    println!("> Sending... parameters are checked and correct");
-                    has_params = true;
+                    
+                    let mut service = SettingsService::new();
+                    let result = service.set_from(send_parameters.unwrap(), false);                  
+                    
+                    if result.is_some() {
+                        exit(exitcode::DATAERR, false, &result.unwrap())
+                    }
+                    
+                    match HeartbeatService::new().send(&service.settings) {
+                        Some(error) => exit(exitcode::DATAERR, false, &error),
+                        None => exit(exitcode::OK, false, "")
+                    };
                 }
+                
+                let settings_service = SettingsService::new().load_settings();
 
-                // Do send
-                exit(exitcode::OK, false, &format!("> Sending heartbeat, has params {}", has_params));
+                match HeartbeatService::new().send(&settings_service.settings) {
+                    Some(error) => exit(exitcode::DATAERR, false, &error),
+                    None => exit(exitcode::OK, false, "")
+                };
             }
 
             exit(exitcode::DATAERR, false, "> Command for heartbeat not found, please read help");

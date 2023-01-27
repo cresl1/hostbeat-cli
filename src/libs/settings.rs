@@ -51,17 +51,17 @@ impl Settings {
         return conf;
     }
 
-    pub fn set_url(mut self, url: String) -> Self {
+    pub fn set_url(&mut self, url: String) -> &Self {
         self.url = url;
         self
     }
 
-    pub fn set_token(mut self, token: String) -> Self {
+    pub fn set_token(&mut self, token: String) -> &Self {
         self.token = token;
         self
     }
 
-    pub fn set_interval(mut self, interval: f32) -> Self {
+    pub fn set_interval(&mut self, interval: f32) -> &Self {
         self.interval = interval;
         self
     }
