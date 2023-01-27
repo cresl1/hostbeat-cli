@@ -51,7 +51,7 @@ fn main() {
                     exit(exitcode::DATAERR, false, "> Invalid parameters for config command, please read help")
                 }
 
-                match SettingsService::new().load_settings().set_from(config_parameters.unwrap(), true) {
+                match SettingsService::new().load_settings().set_to_file_from(config_parameters.unwrap()) {
                     Some(string_error) => exit(exitcode::DATAERR, false, &string_error),
                     None => exit(exitcode::OK, false, "")
                 }
@@ -59,8 +59,7 @@ fn main() {
 
             if third_arg == "daemon" {
 
-                // TODO: remove this for final version
-                let mut has_params = false;
+                let mut settings_service = SettingsService::new().load_settings();
 
                 if args.len() >= 4 {
 
@@ -71,14 +70,14 @@ fn main() {
                         exit(exitcode::DATAERR, false, "> Invalid parameters for daemon command, please read help");
                     }
 
-                    // TODO: Inject parameters
-                    println!("> Daemon... parameters are checked and correct");
-                    has_params = true;
+                    let result = settings_service.set_to_memory_from(send_parameters.unwrap());
+                    
+                    if result.is_some() {
+                        exit(exitcode::DATAERR, false, &result.unwrap())
+                    }
                 }
-
-                // Do send
-                exit(exitcode::OK, false, &format!("> Running daemon, has params {}", has_params));
-
+                
+                HeartbeatService::new().send_as_daemon(&settings_service.settings);
             }
 
             if third_arg == "send" {
@@ -93,7 +92,7 @@ fn main() {
                     }
                     
                     let mut service = SettingsService::new();
-                    let result = service.set_from(send_parameters.unwrap(), false);                  
+                    let result = service.set_to_memory_from(send_parameters.unwrap());                  
                     
                     if result.is_some() {
                         exit(exitcode::DATAERR, false, &result.unwrap())
