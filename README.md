@@ -42,7 +42,7 @@ To be able to use the installation script `ìnstall.sh`, is required to have ins
 - unzip
 
 #### Installation
-Execute the script `ìnstall.sh`, root is not necessary
+Execute the script `ìnstall.sh`
 
 1. Give execute permission
     ```zsh
@@ -51,7 +51,7 @@ Execute the script `ìnstall.sh`, root is not necessary
 
 2. Execute the installer
     ```zsh
-    ./install.sh
+    sudo ./install.sh
     ```
     > If it's the first time installing the tool, re-open a new terminal to be able to use it
     
@@ -61,8 +61,7 @@ To be able to use the installation script `ìnstall.ps1`, is required to have in
 - powershell
 
 #### Installation
-Execute the script `ìnstall.ps1` in Windows, admin is required to make the installation, if is not executed as admin it 
-will be elevated to do it automatically.
+Execute the script `ìnstall.ps1` in Windows, admin is required to make the installation, if is not executed as admin it will be elevated to do it automatically.
 
 1. Execute the installer
     ```zsh
@@ -93,12 +92,9 @@ will be elevated to do it automatically.
     ```
 - Usage
     ```zsh
-
-    ```
-    
-- Examples
-    ```zsh
-
+    hostbeat heartbeat config --set-token mocktoken --set-interval 1.0
+    hostbeat heartbeat daemon
+    hostbeat heartbeat send --use-token anothermocktoken
     ```
 
 ## 🏭 Building release

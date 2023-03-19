@@ -36,6 +36,7 @@ unzip -qq $file$extension
 echo "  > ⏳ Installing..."
 mv "$file/release/hostbeat" "$install_dir/"
 chmod "u+x" "$install_dir/hostbeat"
+chmod "o+x" "$install_dir/hostbeat"
 
 echo "  > 🧹 Cleaning the house..."
 cd $from_dir
