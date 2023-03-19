@@ -1,8 +1,8 @@
 
-![GitHub](https://img.shields.io/github/license/ruben69695/hostbeat?color=purple)
-![GitHub last commit](https://img.shields.io/github/last-commit/ruben69695/hostbeat)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/ruben69695/hostbeat?color=purple)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ruben69695/hostbeat?color=purple)
+![GitHub](https://img.shields.io/github/license/ruben69695/hostbeat-cli?color=purple)
+![GitHub last commit](https://img.shields.io/github/last-commit/ruben69695/hostbeat-cli)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/ruben69695/hostbeat-cli?color=purple)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ruben69695/hostbeat-cli?color=purple)
 
 # Hostbeat CLI
 The command line hostbeat client for Windows, MacOS and Linux. Made with 🦀 Rust and 💙 love.
