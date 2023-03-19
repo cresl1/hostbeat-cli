@@ -14,8 +14,8 @@ impl SettingsService {
     pub fn new() -> SettingsService {
         SettingsService {
             settings: Settings::default(),
-            settings_dir: dirs::config_dir().unwrap().join("dontdie"), 
-            settings_file: dirs::config_dir().unwrap().join("dontdie").join("settings.json"),
+            settings_dir: dirs::config_dir().unwrap().join("hostbeat"), 
+            settings_file: dirs::config_dir().unwrap().join("hostbeat").join("settings.json"),
         }
     }
 

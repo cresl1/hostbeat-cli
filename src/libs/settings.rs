@@ -12,7 +12,7 @@ impl Settings {
     
     pub fn default() -> Settings {
         Settings { 
-            url: String::from("https://dontdieapi.rubenarrebola.pro"), 
+            url: String::from("https://hostbeatapi.rubenarrebola.pro"), 
             token: "".to_string(), 
             interval: 1.0 
         }
@@ -20,7 +20,7 @@ impl Settings {
 
     pub fn from_json(json_data: &str) -> Settings {
         let mut conf = Settings { 
-            url: String::from("https://dontdieapi.rubenarrebola.pro"), 
+            url: String::from("https://hostbeatapi.rubenarrebola.pro"), 
             token: "".to_string(), 
             interval: 1.0 
         };

@@ -22,7 +22,7 @@ fn main() {
         }
 
         if second_arg == "--version" || second_arg == "-v" {
-            exit(exitcode::OK, false, &format!("dontdie {}", env!("CARGO_PKG_VERSION")))
+            exit(exitcode::OK, false, &format!("hostbeat {}", env!("CARGO_PKG_VERSION")))
         }
 
         exit(exitcode::DATAERR, false, "> Invalid parameter, please read help");
