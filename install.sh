@@ -6,7 +6,7 @@ temp_dir="$HOME/.hostbeat_temp"
 install_dir="/usr/local/bin"
 base_url="https://github.com/ruben69695/hostbeat-cli/releases/download"
 version="v1.0.0"
-file="x86_64-unknown-linux-gnu"
+file="x86_64-unknown-linux-musl"
 extension=".zip"
 
 echo "Hostbeat $version installer"
