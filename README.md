@@ -102,21 +102,21 @@ Execute the script `ìnstall.ps1` in Windows, admin is required to make the inst
     ```zsh
     rustup target add aarch64-apple-darwin
     rustup target add x86_64-apple-darwin
-    rustup target add x86_64-unknown-linux-gnu
+    rustup target add x86_64-unknown-linux-musl
     rustup target add x86_64-pc-windows-gnu
     ```
 
 2. Build release for every platform
 - Multiple way
     ```zsh
-    cargo build --release --target=aarch64-apple-darwin --target=x86_64-apple-darwin --target=x86_64-unknown-linux-gnu --target=x86_64-pc-windows-gnu
+    cargo build --release --target=aarch64-apple-darwin --target=x86_64-apple-darwin --target=x86_64-unknown-linux-musl --target=x86_64-pc-windows-gnu
     ```
 
 - Individual way
     ```zsh
     cargo build --target=aarch64-apple-darwin --release
     cargo build --target=x86_64-apple-darwin --release
-    cargo build --target=x86_64-unknown-linux-gnu --release
+    cargo build --target=x86_64-unknown-linux-musl --release
     cargo build --target=x86_64-pc-windows-gnu --release
     ```
 
