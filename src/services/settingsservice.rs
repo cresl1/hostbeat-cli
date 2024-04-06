@@ -19,10 +19,10 @@ impl SettingsService {
         }
     }
 
-    pub fn load_settings(mut self) -> SettingsService {
+    pub fn load_settings(mut self, create_when_not_found: bool) -> SettingsService {
     
         // Create config
-        if !self.settings_dir.exists() {
+        if !self.settings_dir.exists() && create_when_not_found {
             
             match fs::create_dir_all(self.settings_dir.clone()) {
                 Ok(_) => (),

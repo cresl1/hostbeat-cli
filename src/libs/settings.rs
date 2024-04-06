@@ -88,3 +88,9 @@ impl Clone for Settings {
         Self { url: self.url.clone(), token: self.token.clone(), interval: self.interval.clone() }
     }
 }
+
+impl PartialEq for Settings {
+    fn eq(&self, other: &Self) -> bool {
+        self.url == other.url && self.token == other.token && self.interval == other.interval
+    }
+}
