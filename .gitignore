@@ -13,6 +13,7 @@ Cargo.lock
 # Added by cargo
 
 /target
+.idea
 
 # For Mac
 .DS_Store

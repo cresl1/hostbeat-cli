@@ -6,6 +6,10 @@ pub mod cli {
         hostbeat     -h | --help                               show help
         hostbeat     -v | --version                            show program version
 
+        hostbeat     heartbeat   config                        gets current stored configuration
+        hostbeat     heartbeat   config     --get-token        gets current stored token
+        hostbeat     heartbeat   config     --get-url          gets current stored url
+        hostbeat     heartbeat   config     --get-interval     gets current stored interval
         hostbeat     heartbeat   config     --set-url          sets a new url in the configuration file
         hostbeat     heartbeat   config     --set-token        sets a new token in the configuration file
         hostbeat     heartbeat   config     --set-interval     sets a new token in the configuration file
