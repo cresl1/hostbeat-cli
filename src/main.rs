@@ -29,7 +29,7 @@ fn main() {
         exit(exitcode::DATAERR, false, "> Invalid parameter, please read help");
     }
 
-    if second_arg == "heartbeat" {
+    if second_arg == "client" {
 
         if args.len() <= 2 {
             exit(exitcode::USAGE, true, "");
@@ -167,7 +167,7 @@ fn main() {
                 };
             }
 
-            exit(exitcode::DATAERR, false, "> Command for heartbeat not found, please read help");
+            exit(exitcode::DATAERR, false, "> Command for client not found, please read help");
         }
 
         exit(exitcode::DATAERR, false, "> Heartbeat command does not have parameters, please read help");
