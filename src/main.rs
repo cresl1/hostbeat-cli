@@ -49,10 +49,11 @@ fn main() {
                         exit(exitcode::OSFILE, false, "No config found");
                     }
 
-                    let config_data = format!("Hostbeat client configuration\nURL: {}\nINTERVAL: {}\nTOKEN: {}",
+                    let config_data = format!("Hostbeat client configuration\nURL: {}\nINTERVAL: {}\nTOKEN: {}\nMONITORING: {}",
                                               settings_service.settings.url,
                                               settings_service.settings.interval,
-                                              settings_service.settings.token);
+                                              settings_service.settings.token,
+                                              settings_service.settings.monitoring);
 
                     exit(exitcode::OK, false, &config_data);
 
@@ -67,7 +68,7 @@ fn main() {
 
                 if any_set {
 
-                    let parameters = vec!["--set-url", "--set-token", "--set-interval"];
+                    let parameters = vec!["--set-url", "--set-token", "--set-interval", "--set-monitoring"];
                     let config_parameters = get_command_parameters(&parameters, &args[2..]);
 
                     if config_parameters == None {
@@ -87,7 +88,7 @@ fn main() {
                     exit(exitcode::OSFILE, false, "No config found");
                 }
 
-                let parameters = vec!["--get-url", "--get-token", "--get-interval"];
+                let parameters = vec!["--get-url", "--get-token", "--get-interval", "--get-monitoring"];
                 let config_parameters = get_read_command_parameters(&parameters, &args[3..]);
 
                 if config_parameters.is_empty() {
@@ -108,6 +109,10 @@ fn main() {
                     data.push_str(&format!("TOKEN: {}", settings_service.settings.token));
                 }
 
+                if config_parameters.contains(&String::from("--get-monitoring")) {
+                    data.push_str(&format!("MONITORING: {}", settings_service.settings.monitoring));
+                }
+
                 exit(exitcode::OK, false, &data);
 
             }
@@ -118,7 +123,7 @@ fn main() {
 
                 if args.len() >= 4 {
 
-                    let parameters = vec!["--use-url", "--use-token", "--use-interval"];
+                    let parameters = vec!["--use-url", "--use-token", "--use-interval", "--use-monitoring"];
                     let send_parameters = get_command_parameters(&parameters, &args[3..]);
 
                     if send_parameters == None {
@@ -139,7 +144,7 @@ fn main() {
                 
                 if args.len() >= 4 {
 
-                    let parameters = vec!["--use-url", "--use-token"];
+                    let parameters = vec!["--use-url", "--use-token", "--use-monitoring"];
                     let send_parameters = get_command_parameters(&parameters, &args[3..]);
 
                     if send_parameters == None {
@@ -147,6 +152,11 @@ fn main() {
                     }
                     
                     let mut service = SettingsService::new();
+
+                    if service.exists_settings_file() {
+                        service = service.load_settings(false);
+                    }
+
                     let result = service.set_to_memory_from(send_parameters.unwrap());                  
                     
                     if result.is_some() {

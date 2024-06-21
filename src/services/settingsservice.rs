@@ -19,10 +19,14 @@ impl SettingsService {
         }
     }
 
+    pub fn exists_settings_file(&self) -> bool {
+        self.settings_dir.exists()
+    }
+
     pub fn load_settings(mut self, create_when_not_found: bool) -> SettingsService {
     
         // Create config
-        if !self.settings_dir.exists() && create_when_not_found {
+        if !self.exists_settings_file() && create_when_not_found {
             
             match fs::create_dir_all(self.settings_dir.clone()) {
                 Ok(_) => (),
@@ -84,6 +88,18 @@ impl SettingsService {
             
             self.settings.set_interval(parsed);
         }
+
+        let monitoring_value: Option<&String> = map.get("--set-monitoring");
+
+        if monitoring_value.is_some() {
+
+            let parsed: bool = match monitoring_value.unwrap().to_lowercase().parse() {
+                Ok(value) => value,
+                Err(_) => return Some(format!("> Monitoring conversion error: monitoring should be in boolean format like -> true or false"))
+            };
+
+            self.settings.set_monitoring(parsed);
+        }
         
         match fs::write(self.settings_file.clone(), self.settings.to_json()) {
             Ok(_) => return None,
@@ -129,6 +145,18 @@ impl SettingsService {
             }
             
             self.settings.set_interval(parsed);
+        }
+
+        let monitoring_value: Option<&String> = map.get("--use-monitoring");
+
+        if monitoring_value.is_some() {
+
+            let parsed: bool = match monitoring_value.unwrap().to_lowercase().parse() {
+                Ok(value) => value,
+                Err(_) => return Some(format!("> Monitoring conversion error: monitoring should be in boolean format like -> true or false"))
+            };
+
+            self.settings.set_monitoring(parsed);
         }
         
         return None;
