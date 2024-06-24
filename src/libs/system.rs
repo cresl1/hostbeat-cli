@@ -1,18 +1,30 @@
 use std::fmt;
+use json::{JsonValue, object};
 
-pub struct System(pub Vec<Cpu>, pub Memory);
-pub struct Cpu(pub u8, pub f32);
-pub struct Memory(pub u64, pub u64);
+pub struct System {
+    pub cpu_cores: Vec<Cpu>,
+    pub memory: Memory,
+}
+
+pub struct Cpu {
+    pub core_id: u8,
+    pub usage: f32,
+}
+
+pub struct Memory {
+    pub total: u64,
+    pub used: u64,
+}
 
 impl fmt::Display for Cpu {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} - {}%", self.0, self.1)
+        write!(f, "{} - {}%", self.core_id, self.usage)
     }
 }
 
 impl fmt::Display for Memory {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}/{}", (self.1 / 1048576), (self.0 / 1048576))
+        write!(f, "{}/{}", (self.used / 1048576), (self.total / 1048576))
     }
 }
 
@@ -30,7 +42,10 @@ impl System {
         let memory = {
             let total = sys.total_memory();
             let used = sys.used_memory();
-            Memory(total, used)
+            Memory {
+                total,
+                used
+            }
         };
         
         let mut cpus: Vec<Cpu> = vec![];
@@ -39,20 +54,55 @@ impl System {
         for c in sys.cpus() {
             cpus.push({
                 let usage = c.cpu_usage();
-                Cpu(cpu_number, usage)
+                Cpu {
+                    core_id: cpu_number,
+                    usage
+                }
             });
             cpu_number += 1;
         }
 
-        
-        Self(cpus, memory)
+
+        Self {
+            cpu_cores: cpus,
+            memory
+        }
+    }
+
+    pub fn to_json(&self, beautify: bool) -> String {
+
+        let mut cpu_core_objects: Vec<JsonValue> = vec![];
+
+        for cpu_core in &self.cpu_cores {
+
+            let value = object! {
+                coreId: cpu_core.core_id.clone(),
+                currentUsage: cpu_core.usage.clone()
+            };
+
+            cpu_core_objects.push(value);
+        }
+
+        let data = object!{
+            memory: object! {
+                total: self.memory.total.clone(),
+                currentUsage: self.memory.used.clone(),
+            },
+            cpuCores: cpu_core_objects
+        };
+
+        if beautify {
+            return json::stringify_pretty(data, 4);
+        }
+
+        return json::stringify(data);
     }
 
 }
 
 impl fmt::Display for System {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let total_cpu_usage: f32 = self.0.iter().map(|x| &x.1).sum();
-        write!(f, "System: Number of CPUs -> {}, CPU Usage -> {}, Memory -> '{}'", self.0.len(), (total_cpu_usage / self.0.len() as f32), self.1)
+        let total_cpu_usage: f32 = self.cpu_cores.iter().map(|x| &x.usage).sum();
+        write!(f, "System: Number of CPUs -> {}, CPU Usage -> {}, Memory -> '{}'", self.cpu_cores.len(), (total_cpu_usage / self.cpu_cores.len() as f32), self.memory)
     }
 }
