@@ -8,8 +8,8 @@
 The command line hostbeat client for Windows, MacOS and Linux. Made with 🦀 Rust and 💙 love.
 
 ## 📦 Languages and Dev-Tools
-- Rust 1.65.0
-- Cargo 1.65.0
+- Rust 1.79.0
+- Cargo 1.79.0
 
 ## 🔨 Install debug
 This installation version is only for development purposes, be sure to have principal language and dev-tools installed: Rust and Cargo 
@@ -74,21 +74,29 @@ Execute the script `ìnstall.ps1` in Windows, admin is required to make the inst
 
 - Parameters
     ```zsh
-    hostbeat     -h | --help                               show help
-    hostbeat     -v | --version                            show program version
+    -h | --help                            show help
+    -v | --version                         show program version
 
-    hostbeat     client   config     --set-url          sets a new url in the configuration file
-    hostbeat     client   config     --set-token        sets a new token in the configuration file
-    hostbeat     client   config     --set-interval     sets a new interval in the configuration file
+    client   config                        gets current stored configuration
+    client   config     --get-token        gets current stored token
+    client   config     --get-url          gets current stored url
+    client   config     --get-interval     gets current stored interval
+    client   config     --get-monitoring   gets current stored monitoring value
+    client   config     --set-url          sets a new url in the configuration file
+    client   config     --set-token        sets a new token in the configuration file
+    client   config     --set-interval     sets a new interval in the configuration file
+    client   config     --set-monitoring   sets value to enable or disable host cpu and memory monitoring in the configuration file
 
-    hostbeat     client   daemon                        send heartbeats as a daemon using the configuration file
-    hostbeat     client   daemon     --use-url          send heartbeats as a daemon using custom url, overrides file value
-    hostbeat     client   daemon     --use-token        send heartbeats as a daemon using custom token, overrides file value
-    hostbeat     client   daemon     --use-interval     send heartbeats as a daemon using custom interval, overrides file value
+    client   daemon                        send heartbeats as a daemon using the configuration file
+    client   daemon     --use-url          send heartbeats as a daemon using custom url, overrides file value
+    client   daemon     --use-token        send heartbeats as a daemon using custom token, overrides file value
+    client   daemon     --use-interval     send heartbeats as a daemon using custom interval, overrides file value
+    client   daemon     --use-monitoring   send heartbeats as a daemon enabling or disabling monitoring, overrides file value
 
-    hostbeat     client   send                          send one heartbeat using data from file
-    hostbeat     client   send       --use-url          send heartbeat to custom url, overrides file value
-    hostbeat     client   send       --use-token        send heartbeat with custom token, overrides file value
+    client   send                          send one heartbeat using data from file
+    client   send     --use-url            send heartbeat to custom url, overrides file value
+    client   send     --use-token          send heartbeat with custom token, overrides file value
+    client   send     --use-monitoring     send heartbeat and include host cpu and memory data
     ```
 - Usage
     ```zsh

@@ -2,6 +2,7 @@ use std::time::Duration;
 use std::thread;
 
 use crate::libs::settings::Settings;
+use crate::libs::system::System;
 
 pub struct HeartbeatService;
 
@@ -15,9 +16,18 @@ impl HeartbeatService {
         
         let full_url = vec![settings.url.as_ref(), "api", "hosts", "heartbeat"].join("/");
         let auth_value = vec!["Bearer", settings.token.as_ref()].join(" ");
-        let response = minreq::post(&full_url)
-            .with_header("Authorization", auth_value)
-            .send();
+
+        let mut request = minreq::post(&full_url)
+            .with_header("Authorization", auth_value);
+
+        if settings.monitoring {
+            let system = System::get_system_data();
+
+            request = request.with_header("Content-Type", "application/json")
+                .with_body(system.to_json(false));
+        }
+
+        let response = request.send();
             
         match response {
             Ok(r) => {

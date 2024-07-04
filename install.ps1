@@ -16,7 +16,7 @@ if ((Test-Admin) -eq $false)  {
 }
 
 $base_url = "https://github.com/ruben69695/hostbeat-cli/releases/download"
-$version = "1.0.0"
+$version = "2.0.0"
 $file = "x86_64-pc-windows-gnu"
 $extension = ".zip"
 $from_dir = $PWD.Path
