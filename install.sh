@@ -5,7 +5,7 @@ from_dir=$PWD
 temp_dir="$HOME/.hostbeat_temp"
 install_dir="/usr/local/bin"
 base_url="https://github.com/ruben69695/hostbeat-cli/releases/download"
-version="1.0.0"
+version="2.0.0"
 file="x86_64-unknown-linux-musl"
 extension=".zip"
 
